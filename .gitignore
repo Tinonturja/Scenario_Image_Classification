@@ -1,0 +1,24 @@
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+build/
+dist/
+
+# Data & large artifacts — see README for how to obtain the dataset
+seg_train/
+seg_test/
+Test_Data/
+*.pth
+*.pt
+
+# results/*.png and results/*.json (training curves, classification report)
+# ARE committed on purpose — they're the evidence behind the numbers in the
+# README, and they're small.
