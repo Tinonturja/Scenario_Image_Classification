@@ -31,6 +31,18 @@ systematically confusing two similar classes (e.g. `sea` vs. `glacier`).
 Run `python -m scene_classifier.train` end-to-end to generate that report
 for the current model.
 
+### Example predictions
+
+![Example predictions](assets/prediction_examples.png)
+
+Real inferences from `results/model.pth` on the three personal photos in
+`assets/examples/` — actual model output, not mockups. Regenerate after
+training with:
+
+```bash
+python scripts/make_prediction_demo.py
+```
+
 ## Dataset
 
 The [Intel Image Classification dataset](https://www.kaggle.com/datasets/puneet6060/intel-image-classification)
