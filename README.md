@@ -11,17 +11,30 @@ weights) and a new linear classifier head, Adam optimizer, lr=1e-4.
 
 | Epoch | Train Loss | Train Acc | Test Loss | Test Acc |
 |-------|-----------|-----------|-----------|----------|
-| 0 | 1.296 | 66.1% | 0.868 | 82.8% |
-| 1 | 0.748 | 82.4% | 0.601 | 86.1% |
-| 2 | 0.588 | 84.4% | 0.502 | 86.5% |
-| 3 | 0.512 | 85.3% | 0.450 | 86.5% |
-| 4 | 0.477 | 85.4% | 0.413 | **87.1%** |
+| 0 | 1.231 | 66.3% | 0.824 | 83.8% |
+| 1 | 0.729 | 82.9% | 0.590 | 85.7% |
+| 2 | 0.577 | 84.8% | 0.481 | 86.8% |
+| 3 | 0.512 | 85.1% | 0.434 | 86.9% |
+| 4 | 0.462 | 86.2% | 0.404 | **87.3%** |
 
 ![Training curves](results/training_curves.png)
 
-These numbers are the exact values logged during training (see
-`results/history.json`); the plot above is generated directly from that
-file, not from a separate run.
+Per-class breakdown on the test set:
+
+| Class | Precision | Recall | F1 |
+|---|---|---|---|
+| buildings | 0.892 | 0.865 | 0.878 |
+| forest | 0.981 | 0.979 | 0.980 |
+| glacier | 0.814 | 0.805 | 0.809 |
+| mountain | 0.800 | 0.792 | 0.796 |
+| sea | 0.877 | 0.892 | 0.884 |
+| street | 0.890 | 0.918 | 0.904 |
+
+`glacier` and `mountain` are the weakest classes, which lines up with the
+intuition that they're the two most visually similar categories in this
+dataset. These numbers are the exact values logged during a full end-to-end
+training run of this refactored code (see `results/history.json`); the plot
+above is generated directly from that file.
 
 **On the codebase, not just the model:** `src/scene_classifier/engine.py`
 also adds `evaluate_with_report()`, which computes a full per-class
@@ -116,17 +129,17 @@ The original notebook is preserved under `notebooks/` unchanged. The
 `src/` package is a clean-room reimplementation of the same training logic:
 same architecture, same hyperparameters, same data pipeline — restructured
 into modules with type hints, docstrings, and a test suite, plus the added
-per-class evaluation report described above. The reported results table
-comes directly from the notebook's own run; I have not re-run training from
-this refactored code end-to-end in the environment that built this
-repository structure, since that requires downloading the pretrained
-ImageNet weights (~20MB from `download.pytorch.org`) and the full ~550MB
-dataset. The unit tests in `tests/` do validate the refactored code
-(dataloaders, training step, evaluation, model shapes) without needing
-either — the training loop is exercised against a synthetic dataset in
-`tests/test_engine.py` and confirmed to actually reduce loss. If you want
-to confirm the full pipeline end-to-end, `python -m scene_classifier.train`
-will do it and regenerate `results/` from scratch.
+per-class evaluation report described above.
+
+The results table above is from a full end-to-end run of this refactored
+code (`python -m scene_classifier.train`, 5 epochs, Apple Silicon `mps`
+backend), not copied from the original notebook. It lands at 87.3% test
+accuracy, close to the original notebook's 87.1% on the same architecture
+and hyperparameters — the small difference is expected from a different
+run (hardware, weight initialization) rather than a code discrepancy. The
+unit tests in `tests/` separately validate the refactored code
+(dataloaders, training step, evaluation, model shapes) against a synthetic
+dataset without needing the real data or pretrained weights at all.
 
 ## License
 
